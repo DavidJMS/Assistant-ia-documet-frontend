@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+import {
+  listDocuments,
+  uploadDocument,
+  deleteDocument,
+} from "@/services/documents";
 
 interface Document {
   id: string;
@@ -25,8 +30,7 @@ const UploadPage: React.FC = () => {
 
   const fetchDocuments = async () => {
     try {
-      const res = await fetch("http://localhost:8000/documents");
-      const data = await res.json();
+      const data = await listDocuments();
       setDocuments(data);
     } catch (err) {
       console.error("Error al cargar documentos:", err);
@@ -48,25 +52,12 @@ const UploadPage: React.FC = () => {
     const successful: string[] = [];
 
     for (const file of files) {
-      const formData = new FormData();
-      formData.append("file", file);
-
       try {
-        const res = await fetch("http://localhost:8000/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        const data = await res.json();
-
-        if (res.ok && data.file_id) {
-          successful.push(`${file.name} ✅`);
-        } else {
-          successful.push(`${file.name} ❌ (${data.detail || "error"})`);
-        }
-      } catch (err) {
+        const res = await uploadDocument(file);
+        successful.push(`${file.name} ✅`);
+      } catch (err: any) {
         console.error("Error al subir:", err);
-        successful.push(`${file.name} ❌ (fallo de red)`);
+        successful.push(`${file.name} ❌ (${err?.response?.data?.detail || "error"})`);
       }
     }
 
@@ -81,18 +72,11 @@ const UploadPage: React.FC = () => {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/documents/${id}`, {
-        method: "DELETE",
-      });
-
-      if (res.ok) {
-        setDocuments((prev) => prev.filter((doc) => doc.id !== id));
-      } else {
-        const err = await res.json();
-        alert("Error al eliminar: " + err.detail);
-      }
-    } catch (err) {
+      await deleteDocument(id);
+      setDocuments((prev) => prev.filter((doc) => doc.id !== id));
+    } catch (err: any) {
       console.error("Error al eliminar documento:", err);
+      alert("Error al eliminar: " + (err?.response?.data?.detail || "error"));
     }
   };
 

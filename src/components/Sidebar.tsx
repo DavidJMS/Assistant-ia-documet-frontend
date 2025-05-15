@@ -1,8 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Upload, MessageCircle, LogOut } from "lucide-react";
+import { logout } from "@/services/auth";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ close }: { close?: () => void }) => {
   const location = useLocation();
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const linkClass = (path: string) =>
     `flex items-center gap-3 px-4 py-2 rounded-lg transition-all ${
@@ -31,10 +40,7 @@ const Sidebar = ({ close }: { close?: () => void }) => {
       </nav>
 
       <button
-        onClick={() => {
-          close?.();
-          // lógica de logout si aplica
-        }}
+        onClick={handleLogout}
         className="mt-auto text-gray-400 hover:text-red-400 flex items-center gap-2"
       >
         <LogOut size={18} />

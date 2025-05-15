@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { listDocuments, askDocument } from "@/services/documents";
 
 interface Message {
   type: "user" | "bot";
@@ -19,10 +20,16 @@ const AskPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8000/documents")
-      .then((res) => res.json())
-      .then((data) => setDocuments(data))
-      .catch((err) => console.error("Error al cargar documentos:", err));
+    const loadDocuments = async () => {
+      try {
+        const data = await listDocuments();
+        setDocuments(data);
+      } catch (err) {
+        console.error("Error al cargar documentos:", err);
+      }
+    };
+
+    loadDocuments();
   }, []);
 
   const handleSend = async () => {
@@ -34,20 +41,8 @@ const AskPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          file_id: selectedFileId,
-          question: userMsg.text,
-          model: "gpt-4", // opcional
-          temperature: 0.7,
-          max_tokens: 500,
-        }),
-      });
-
-      const data = await res.json();
-      setChat((prev) => [...prev, { type: "bot", text: data.response }]);
+      const data = await askDocument(selectedFileId, userMsg.text);
+      setChat((prev) => [...prev, { type: "bot", text: data.answer || data.response }]);
     } catch (err) {
       console.error("Error al preguntar:", err);
       setChat((prev) => [

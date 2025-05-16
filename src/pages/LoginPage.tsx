@@ -17,9 +17,9 @@ const LoginPage: React.FC = () => {
   try {
     const data = await login(email, password);
     localStorage.setItem("token", data.access_token);
-    navigate("/dashboard");
+    navigate("/ask");
   } catch (err: any) {
-    setError(err?.response?.data?.detail || "Error al iniciar sesión");
+    setError(err?.response?.data?.detail || "Error login.");
   }
 };
 
@@ -29,10 +29,10 @@ const LoginPage: React.FC = () => {
       style={{ backgroundImage: `url(${background})` }}
     >
       <div className="bg-white shadow-xl rounded-2xl p-6 sm:p-8 w-full max-w-sm z-10">
-        <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Iniciar sesión</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Correo electrónico</label>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
               className="mt-1 w-full px-4 py-2 border rounded-lg"
@@ -43,7 +43,7 @@ const LoginPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Contraseña</label>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
               className="mt-1 w-full px-4 py-2 border rounded-lg"
@@ -57,9 +57,9 @@ const LoginPage: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-950 cursor-pointer"
           >
-            Iniciar sesión
+            Submit
           </button>
         </form>
       </div>

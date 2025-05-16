@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import DashboardLayout from "./layouts/DashboardLayout";
-import DashboardPage from "./pages/DashboardPage";
 import UploadPage from "./pages/UploadPage";
 import AskPage from "./pages/AskPage";
 import PrivateRoute from "./components/PrivateRoute";
@@ -18,7 +17,7 @@ const App = () => {
             </PrivateRoute>
           }
         >
-          <Route path="/dashboard" element={<DashboardPage />} />
+          {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/ask" element={<AskPage />} />
         </Route>

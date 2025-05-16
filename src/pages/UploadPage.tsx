@@ -33,7 +33,7 @@ const UploadPage: React.FC = () => {
       const data = await listDocuments();
       setDocuments(data);
     } catch (err) {
-      console.error("Error al cargar documentos:", err);
+      console.error("Error getting documents:", err);
     }
   };
 
@@ -53,16 +53,20 @@ const UploadPage: React.FC = () => {
 
     for (const file of files) {
       try {
-        const res = await uploadDocument(file);
+        await uploadDocument(file);
         successful.push(`${file.name} ✅`);
       } catch (err: any) {
-        console.error("Error al subir:", err);
-        successful.push(`${file.name} ❌ (${err?.response?.data?.detail || "error"})`);
+        console.error("Error uploading file:", err);
+        // successful.push(`${file.name} ❌ (${err?.response?.data?.detail || "error"})`);
+        successful.push(`${file.name} ❌`);
+        setLoading(false);
+        setMessage(`Error uploading :\n${successful.join("\n")}`);
+        return null
       }
     }
 
     setFiles([]);
-    setMessage(`Proceso completado:\n${successful.join("\n")}`);
+    setMessage(`Process completed:\n${successful.join("\n")}`);
     setLoading(false);
     fetchDocuments();
   };
@@ -82,7 +86,7 @@ const UploadPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 px-4">
-      <h2 className="text-2xl font-semibold mb-4">📤 Subir documentos</h2>
+      <h2 className="text-2xl font-semibold mb-4">📤 Upload documents</h2>
 
       {/* Formulario */}
       <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
@@ -101,9 +105,9 @@ const UploadPage: React.FC = () => {
         <button
           onClick={handleUpload}
           disabled={files.length === 0 || loading}
-          className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+          className="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-950 disabled:bg-gray-400"
         >
-          {loading ? "Subiendo..." : "Subir archivos"}
+          {loading ? "Uploading..." : "Upload"}
         </button>
 
         {message && (
@@ -115,10 +119,10 @@ const UploadPage: React.FC = () => {
 
       {/* Lista de archivos subidos */}
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-medium mb-2">📚 Documentos registrados</h3>
+        <h3 className="text-lg font-medium mb-2">📚 My documents</h3>
 
         {documents.length === 0 ? (
-          <p className="text-gray-500">Aún no hay documentos.</p>
+          <p className="text-gray-500">There are no documents yet.</p>
         ) : (
           <>
             <ul className="divide-y text-sm text-gray-700">
@@ -132,7 +136,7 @@ const UploadPage: React.FC = () => {
                     onClick={() => handleDelete(doc.id)}
                     className="text-red-500 hover:text-red-700 text-xs border px-2 py-1 rounded"
                   >
-                    Eliminar
+                    Delete
                   </button>
                 </li>
               ))}
@@ -146,17 +150,17 @@ const UploadPage: React.FC = () => {
                   disabled={currentPage === 1}
                   className="text-sm px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
                 >
-                  ← Anterior
+                  ← Previous
                 </button>
                 <span className="text-sm">
-                  Página {currentPage} de {totalPages}
+                  Page {currentPage} of {totalPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
                   className="text-sm px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
                 >
-                  Siguiente →
+                  Next →
                 </button>
               </div>
             )}

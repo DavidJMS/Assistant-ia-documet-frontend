@@ -25,7 +25,7 @@ const AskPage: React.FC = () => {
         const data = await listDocuments();
         setDocuments(data);
       } catch (err) {
-        console.error("Error al cargar documentos:", err);
+        console.error("Error getting documents:", err);
       }
     };
 
@@ -44,10 +44,10 @@ const AskPage: React.FC = () => {
       const data = await askDocument(selectedFileId, userMsg.text);
       setChat((prev) => [...prev, { type: "bot", text: data.answer || data.response }]);
     } catch (err) {
-      console.error("Error al preguntar:", err);
+      console.error("Error when asking:", err);
       setChat((prev) => [
         ...prev,
-        { type: "bot", text: "❌ Error al obtener respuesta." },
+        { type: "bot", text: "❌ Error getting response." },
       ]);
     } finally {
       setLoading(false);
@@ -56,17 +56,17 @@ const AskPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 px-4 pb-12">
-      <h2 className="text-2xl font-semibold">💬 Asistente de documentos</h2>
+      <h2 className="text-2xl font-semibold">💬 Document Assistant</h2>
 
       {/* Selector de documento */}
       <div className="bg-white p-4 rounded-lg shadow-md">
-        <label className="block text-sm font-medium mb-2">Selecciona un documento:</label>
+        <label className="block text-sm font-medium mb-2">Select a document:</label>
         <select
           className="w-full border px-4 py-2 rounded-lg"
           value={selectedFileId}
           onChange={(e) => setSelectedFileId(e.target.value)}
         >
-          <option value="">-- Selecciona un archivo --</option>
+          <option value="">-- Select a file --</option>
           {documents.map((doc) => (
             <option key={doc.id} value={doc.file_id}>
               {doc.filename}
@@ -91,7 +91,7 @@ const AskPage: React.FC = () => {
         ))}
         {loading && (
           <div className="animate-pulse text-gray-500 italic">
-            El asistente está escribiendo...
+            The assistant is typing...
           </div>
         )}
       </div>
@@ -100,7 +100,7 @@ const AskPage: React.FC = () => {
       <div className="flex gap-4">
         <input
           type="text"
-          placeholder="Escribe tu pregunta..."
+          placeholder="Write your question..."
           className="flex-1 border px-4 py-2 rounded-lg"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
@@ -109,10 +109,10 @@ const AskPage: React.FC = () => {
         />
         <button
           onClick={handleSend}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+          className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-950 disabled:bg-gray-400"
           disabled={!question || !selectedFileId}
         >
-          Enviar
+          Send
         </button>
       </div>
     </div>

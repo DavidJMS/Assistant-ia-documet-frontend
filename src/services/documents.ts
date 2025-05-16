@@ -4,6 +4,10 @@ export const uploadDocument = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
   const res = await api.post("/upload", formData);
+  if(res.status >= 400){
+    console.log(res.status)
+    throw new Error('Error uploading file.')
+  }
   return res.data;
 };
 
